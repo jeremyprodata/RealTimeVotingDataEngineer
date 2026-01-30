@@ -1,0 +1,131 @@
+Note_Projet1_RealTimeVotingDataEngineer 
+
+
+
+Realtime Voting System: End-to-End Data Engineering Project
+- Lien: https://www.youtube.com/watch?v=X-JnC9daQxE&list=PLPFprzTV6nGv1UCyLPm4odBjwLDXvK705&index=6
+
+
+0. Intro 
+=> In this video, we'll build an end to end realtime voting system with the use of modern bidata technologies like: 
+Apache Kafka, Apache Spark and Streamlit.
+
+
+
+1. Le flux du système:
+=> On a 3 partie politique
+=> 1 candidat par patie 
+=> chaque candidat sera soumis à un processus de vote rigoureux qui se déroulera sur la plateforme 
+=> Le candidat qui obtient le plus de vote gagne l'éléction
+#OK
+
+
+
+
+
+
+
+2. L'Architecture du système:
+=> L'architecture se présente comme suit:
+- Les partis représentent les candidats et les électeurs inscrit sur la plateforme. 
+- chaqun de ces élément (Parties, Candidats, Voters (élécteurs)) sera représenté par une entité enregistrée dans Postgresql.
+- Pour chaque personne enregistrée (les partis, les candidats et les électeurs), les infos sauvegardées sur PostgreSQL seront
+immédiatement et simultanément ttransférées vers kafka. 
+- Une fois les données dans kafka, un job spark écoutera les événement entrants, les consommera, les agrégera 
+et les retransmettra vers un autre topic kafka. 
+- Coté visualisation, StreamLit écoutera également les événements entrants dans le topic kafka et les visualisera en tps réel.
+=> Nous pourons ainsi observer l'évolution des candidats au fur et à mesure des votes. 
+#OK
+
+
+
+
+
+
+
+3. Création d'un nouveau projet (RealTimeVotingEngineering) avec un environnement virtuel sur vscode 
+=> Etape 1: Ouvrire le dossier RealTimeVotingEngineering dans vs code 
+=> Etape 2: Creat an environement for your Python 3.14.0 project avec venv 
+=> Etape 3: ouvrire le terminal à la racine du projet 
+=> Etape 4: Activer l'environemnt virtuel en tapant la commande suivante: 
+- C'est automatique 
+#OK
+
+
+
+4. Installation des packages que nous allons utiliser dans notre environnement virtuel isolé 
+=> On va avoir besoin d'accéder à PostgreSQL. Nous devons donc installer le binaire cyop D2 pour avoir accès à PostgreSQL.
+=> Nous aurons besoin de confluent kafka pour communiquer avec kafka
+=> Et d'un simplejson pour la sérialisation et la désérialisation JSON.
+		pip install psycopg2-binary confluent_kafka simplejson
+=> Si on a besoin d'autre package on les installera par la suite 
+#OK
+
+
+
+5. Configuration de notre architecture du système avec Docker compose 
+=> Etape 1: Creation de notre document docker-compose.yml à l racine de notre projet avec le code suivant dans le terminal:
+		code docker-compose.yml
+=> Etape 2: Copier coller l'architecture depuis le fichier github et puis commentons le
+-> suppression des volumes (lignes 	3 à 5)
+-> Ensuite on a en services: 
+- Zookeeper
+- broker
+- postgres
+- ainsi que: - spark-master 
+             - et spark-worker 
+#OK			 
+
+5.1. Service Zookeeper
+=> zokeeper utilise l'image confluentinc/cp-zookeeper:7.4.0 et je l'expose sur le ports "2181:2181"
+=> healthcheck est la vérification qui existe en raison de la dépendance qui existe entre Zookeeper et le broker lui meme
+#OK
+
+
+5.2. Service Broker
+=> le broker utilise l'image confluentinc/cp-kafka:7.4.0 et on expose les ports "9092:9092" et "9101:9101"
+ainsi que le connexion zookeeper à cette URL 
+#???
+
+5.3. Service Postgresql
+=> On utilise la dernière version de postgresql (avec postgres:latest comme image)
+et le ports exposé est le "5432:5432"
+=> L'environnement est Postgresql et j'appelle la base de données voting 
+#OK
+
+5.4. Accédons au noeuds avec spark-master et spark-worker 
+
+
+
+6. Créons et lancons nos contenaire docker 
+
+		docker compose up -d
+
+
+
+
+
+
+
+7. main.py
+=> Dans ce script, nous allons générer les infos sur les élécteurs, les candidats et les partis. 
+=> Tout sera enregistré dans PostgresSQL 
+=> Ainsi nous allons créer des tables dans PostgreSQL 
+
+
+8. 
+=> J'en suis à la 26min et 55 seconde et j'ai éxécuter le script main.py qui ma créer mes 3 table et insérer mes candidats  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
